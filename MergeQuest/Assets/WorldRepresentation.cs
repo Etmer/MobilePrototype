@@ -2,17 +2,20 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class WorldRepresentation 
+[System.Serializable]
+public class WorldRepresentation
 {
-    private Transform _worldTransform;
-    private SpriteRenderer _renderer;
-    private Vector3 _startPosition;
+    [SerializeField] private Transform _worldTransform;
+    [SerializeField] private SpriteRenderer _renderer;
+    [SerializeField] private Vector3 _startPosition;
+    [SerializeField] private int _index;
 
-    public WorldRepresentation(Transform worldTransform, SpriteRenderer renderer)
+    public WorldRepresentation(Transform worldTransform, SpriteRenderer renderer, int index)
     {
         _worldTransform = worldTransform;
         _startPosition = _worldTransform.position;
         _renderer = renderer;
+        _index = index;
     }
 
     public void PickUp()
@@ -44,4 +47,6 @@ public class WorldRepresentation
     {
         return _renderer.sprite;
     }
+
+    public int WorldIndex { get { return _index; } }
 }
