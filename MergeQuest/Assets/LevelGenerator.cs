@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class LevelGenerator : MonoBehaviour
 {
-
+    [SerializeField] private SpriteManager _spriteManager;
     [SerializeField] private Transform _parentGameObject;
 
     public Dictionary<int, Field> CreateField(ref MapData data)
@@ -23,12 +23,12 @@ public class LevelGenerator : MonoBehaviour
                 data.AddPosition( FieldPosition);
                 mapIndex = GameMetrics.VectorToIndex(FieldPosition - startPosition);
                 Field tempField = new Field(FieldPosition);
-                Ingredient tempIngredient = null;
-                if (x == 0 && (y == 0 || y == 2))
-                {
-                    tempIngredient = new Ingredient();
-                }
+                Ingredient tempIngredient = CreateIngredient();
                 _parentGameObject.GetChild(index).transform.position = FieldPosition;
+                if (tempIngredient != null)
+                {
+                    _parentGameObject.GetChild(index).transform.GetChild(0).GetComponent<SpriteRenderer>().sprite = SetSprite(tempIngredient.ingredientType);
+                }
                 data.AddWorldRepresenation(new WorldRepresentation(_parentGameObject.GetChild(index).GetChild(0).transform, _parentGameObject.GetChild(index).GetChild(0).GetComponent<SpriteRenderer>(), index));
                 tempField.SetIngredient(tempIngredient);
                 map.Add(mapIndex, tempField);
@@ -37,5 +37,28 @@ public class LevelGenerator : MonoBehaviour
         }
         data.ChangeRect(startPosition.x - GameMetrics.SpriteWidth / 2, startPosition.y - GameMetrics.SpriteHeight / 2, 3 * GameMetrics.SpriteWidth, 3 * GameMetrics.SpriteHeight);
         return map;
+    }
+
+    private Ingredient CreateIngredient()
+    {
+        int index = Random.Range(0, 10);
+        switch (index)
+        {
+            case 0:
+                return new Ingredient(IngredientType.Head);
+            case 1:
+                return new Ingredient(IngredientType.Torso);
+            case 2:
+                return new Ingredient(IngredientType.Arm);
+            case 3:
+                return new Ingredient(IngredientType.Foot);
+            default:
+                return null;
+        }
+    }
+
+    private Sprite SetSprite(IngredientType ingredientType)
+    {
+        return _spriteManager.GetSprite(ingredientType);
     }
 }

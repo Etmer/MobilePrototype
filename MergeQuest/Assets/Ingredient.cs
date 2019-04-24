@@ -16,14 +16,17 @@ public class Ingredient
 
     private IngredientStates _currentState;
 
-    public Ingredient()
+    public IngredientType ingredientType { get; private set; }
+
+    public Ingredient(IngredientType typeOfIngredient)
     {
+        ingredientType = typeOfIngredient;
     }
 
     public static SuperIngredient operator +(Ingredient lhs, Ingredient rhs)
     {
         Debug.Log("Created new SuperIngredient");
-        return new SuperIngredient();
+        return new SuperIngredient(lhs.ingredientType);
     }
     
     public Ingredient PickUp()

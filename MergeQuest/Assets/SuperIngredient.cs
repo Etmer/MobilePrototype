@@ -5,7 +5,7 @@ using UnityEngine;
 public class SuperIngredient : Ingredient
 {
 
-    public SuperIngredient() : base()
+    public SuperIngredient(IngredientType typeOfIngredient) : base(typeOfIngredient)
     {
     }
 
