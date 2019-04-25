@@ -4,9 +4,9 @@ using UnityEngine;
 
 public enum IngredientType
 {
-    Head,
-    Torso,
-    Arm,
+    Volunteer,
+    Zombie,
+    Poison,
     Foot
 }
 
@@ -14,7 +14,7 @@ public enum IngredientType
 public class SpriteManager : ScriptableObject
 {
     /// <summary>
-    /// 1 = Head, 2 = Torso, 3 = Arm, 4 = Foot
+    /// 1 = Volunteer, 2 = Zombie, 3 = Poison, 4 = Foot
     /// </summary>
     [SerializeField] private Sprite[] _IngredientSprites;
 

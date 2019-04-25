@@ -1587,6 +1587,7 @@ MonoBehaviour:
     y: 0
     width: 0
     height: 0
+  _spriteManager: {fileID: 11400000, guid: 07d42efa686c11c4b82f1aa9d970678e, type: 2}
   _text: {fileID: 2800000, guid: d9b11becae751af4cb7bcbbf2756da05, type: 3}
   _levelGenerator: {fileID: 164880888}
   _mapdata:

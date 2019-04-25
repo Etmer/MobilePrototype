@@ -15,7 +15,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private WorldRepresentation[] _worldSlots;
     [SerializeField] private Transform _prefab;
     [SerializeField] private Rect _playArea;
-
+    [SerializeField] private SpriteManager _spriteManager;
     [SerializeField] private Texture _text;
 
     [Header("Fields")]
@@ -68,9 +68,14 @@ public class GameManager : MonoBehaviour
                 {
                     if (_model.GetField(_currentIndex).HasContent)
                     {
-                        //SuperIngredient SI = _currentIngredient + _model.GetField(_currentIndex).GetIngredient;
-                        //_model.GetField(_currentIndex).SetIngredient(SI);
-                        //_currentIngredient.Release(_model.GetField(_currentIndex).GetScreenPosition);
+                        if (_currentIngredient.index == _model.GetField(_currentIndex).GetIngredient.index)
+                        {
+                            Ingredient newIngredient = _currentIngredient.Combine(_model.GetField(_currentIndex).GetIngredient);
+                            _model.GetField(_currentIndex).SetIngredient(newIngredient);
+                            _worldSlots[_currentIndex].ChangeSprite(_spriteManager.GetSprite(newIngredient.ingredientType));
+                            _currentWorldRepresentation.DeleteSprite();
+                            _currentField.SetIngredient(null);
+                        }
                         _currentWorldRepresentation.ReturnToStart();
                     }
                     else

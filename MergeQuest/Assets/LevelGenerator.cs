@@ -19,7 +19,7 @@ public class LevelGenerator : MonoBehaviour
         {
             for (int x = 0; x < 3; x++)
             {
-                FieldPosition = startPosition + Vector3.right * GameMetrics.SpriteWidth * x + Vector3.up * GameMetrics.SpriteHeight * y;
+                FieldPosition = startPosition + Vector3.right * GameMetrics.SpriteWidth * x + Vector3.up * GameMetrics.SpriteHeight * y + Vector3.forward/1000 * y;
                 data.AddPosition( FieldPosition);
                 mapIndex = GameMetrics.VectorToIndex(FieldPosition - startPosition);
                 Field tempField = new Field(FieldPosition);
@@ -45,13 +45,11 @@ public class LevelGenerator : MonoBehaviour
         switch (index)
         {
             case 0:
-                return new Ingredient(IngredientType.Head);
+                return new Ingredient(IngredientType.Volunteer);
             case 1:
-                return new Ingredient(IngredientType.Torso);
+                return new Ingredient(IngredientType.Zombie);
             case 2:
-                return new Ingredient(IngredientType.Arm);
-            case 3:
-                return new Ingredient(IngredientType.Foot);
+                return new Ingredient(IngredientType.Poison);
             default:
                 return null;
         }

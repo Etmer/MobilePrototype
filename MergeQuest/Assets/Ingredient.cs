@@ -12,6 +12,8 @@ public enum IngredientStates
 
 public class Ingredient
 {
+    public int index { get; private set; }
+
     private Vector3 _originPosition;
 
     private IngredientStates _currentState;
@@ -21,12 +23,20 @@ public class Ingredient
     public Ingredient(IngredientType typeOfIngredient)
     {
         ingredientType = typeOfIngredient;
+        if (ingredientType == IngredientType.Volunteer || ingredientType == IngredientType.Poison)
+        {
+            index = 0;
+        }
+        else
+        {
+            index = 1;
+        }
     }
 
-    public static SuperIngredient operator +(Ingredient lhs, Ingredient rhs)
+    public Ingredient  Combine(Ingredient target)
     {
-        Debug.Log("Created new SuperIngredient");
-        return new SuperIngredient(lhs.ingredientType);
+        IngredientType newType = CombinedIngredientType( target.ingredientType);
+        return new Ingredient(newType);
     }
     
     public Ingredient PickUp()
@@ -71,5 +81,30 @@ public class Ingredient
     public IngredientStates GetState()
     {
         return _currentState;
+    }
+
+    private IngredientType CombinedIngredientType(IngredientType target)
+    {
+        Debug.Log(target + " " + ingredientType);
+        switch (ingredientType)
+        {
+            case IngredientType.Volunteer:
+                if (target == IngredientType.Poison)
+                {
+                    return IngredientType.Zombie;
+                }
+                break;
+            case IngredientType.Poison:
+                if (target == IngredientType.Volunteer)
+                {
+                    return IngredientType.Zombie;
+                }
+                break;
+            case IngredientType.Zombie:
+                    return IngredientType.Zombie;
+            default:
+                throw new System.Exception();
+        }
+        return ingredientType;
     }
 }
