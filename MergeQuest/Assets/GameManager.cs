@@ -9,7 +9,6 @@ public class GameManager : MonoBehaviour
     [SerializeField] private Transform[] _fieldPool;
     private Vector3 _mousePosition;
     private Vector3 _worldPosition;
-    private WorldRepresentation _currentWorldRepresentation;
     private int _currentIndex;
     private Ingredient _currentIngredient;
     [SerializeField] private WorldRepresentation[] _worldSlots;
@@ -17,14 +16,11 @@ public class GameManager : MonoBehaviour
     [SerializeField] private Rect _playArea;
     [SerializeField] private SpriteManager _spriteManager;
     [SerializeField] private Texture _text;
-
-    [Header("Fields")]
-    private Field _currentField;
-
+    
     [SerializeField] private LevelGenerator _levelGenerator;
     [SerializeField] private MapData _mapdata;
 
-
+    private WorldRepresentation _currentWorldRepresentation;
     void Start()
     {
         GameMetrics.Init(_defaultSprite);
@@ -32,7 +28,6 @@ public class GameManager : MonoBehaviour
         _model = new DataModel(_levelGenerator.CreateField(ref _mapdata));
         ReadMapData();
     }
-
     private void ReadMapData()
     {
         for (int i = 0; i < _mapdata.FieldCount; i++)
@@ -49,59 +44,19 @@ public class GameManager : MonoBehaviour
         CalculateMousePosition();
         _worldPosition = Camera.main.ScreenToWorldPoint(_mousePosition);
         _currentIndex = GameMetrics.VectorToIndex(_worldPosition - Vector3.zero);
-        Debug.Log(_currentIndex);
         if (_playArea.Contains(new Vector2(_worldPosition.x, _worldPosition.y)))
         {
-            if (Input.GetMouseButtonDown(0) && _model.GetField(_currentIndex).HasContent)
+            if (Input.GetMouseButtonDown(0) && CurrentField.HasContent)
             {
-                _currentIngredient = _model.GetField(_currentIndex).GetIngredient.PickUp();
-                _currentWorldRepresentation = _worldSlots[_currentIndex];
-                _currentField = _model.GetField(_currentIndex);
+                PickUpIngredient(CurrentField.Ingredient);
             }
-            if (_currentIngredient != null)
+            if (Input.GetMouseButton(0) && _currentWorldRepresentation != null)
             {
-                if (Input.GetMouseButton(0))
-                {
-                    _currentWorldRepresentation.Move(_worldPosition);
-                }
-                else
-                {
-                    if (_model.GetField(_currentIndex).HasContent)
-                    {
-                        if (_currentIngredient.index == _model.GetField(_currentIndex).GetIngredient.index)
-                        {
-                            Ingredient newIngredient = _currentIngredient.Combine(_model.GetField(_currentIndex).GetIngredient);
-                            _model.GetField(_currentIndex).SetIngredient(newIngredient);
-                            _worldSlots[_currentIndex].ChangeSprite(_spriteManager.GetSprite(newIngredient.ingredientType));
-                            _currentWorldRepresentation.DeleteSprite();
-                            _currentField.SetIngredient(null);
-                        }
-                        _currentWorldRepresentation.ReturnToStart();
-                    }
-                    else
-                    {
-                        if (FieldChanged())
-                        {
-                            _currentField.DecoupleIngredient();
-                            _worldSlots[_currentIndex].ChangeSprite(_currentWorldRepresentation.GetSprite());
-                            _currentWorldRepresentation.DeleteSprite();
-                            _currentField = null;
-                        }
-                        else
-                        {
-                            _currentWorldRepresentation.ReturnToStart();
-                        }
-                        _model.GetField(_currentIndex).SetIngredient(_currentIngredient);
-                    }
-                    _currentIngredient = null;
-                }
+                _currentWorldRepresentation.Move(_worldPosition);
             }
-        }
-        else
-        {
-            if (_currentWorldRepresentation != null)
+            else if (_currentIngredient != null)
             {
-                _currentWorldRepresentation.ReturnToStart();
+                ReleaseIngredient();
             }
         }
     }
@@ -121,11 +76,86 @@ public class GameManager : MonoBehaviour
 
     private bool FieldChanged()
     {
-        return _currentIndex != _currentWorldRepresentation.WorldIndex;
+        return _currentIndex != GetCurrentWorldRepresentation().WorldIndex;
     }
 
     private void ReleaseIngredient()
     {
+        if (_currentIngredient != null)
+        {
+            if (_currentWorldRepresentation != GetCurrentWorldRepresentation())
+            {
+                _currentWorldRepresentation.DeleteSprite();
+            }
+            if (CurrentField.HasContent)
+            {
+                Ingredient temp = Combine(_currentIngredient, CurrentField.Ingredient);
+                CurrentField.SetIngredient(temp);
+                GetCurrentWorldRepresentation().ChangeSprite(IngredientSprite(temp.SpriteIndex));
+            }
+            else
+            {
+                CurrentField.SetIngredient(_currentIngredient);
+                GetCurrentWorldRepresentation().ChangeSprite(IngredientSprite(_currentIngredient.SpriteIndex));
+            }
+            _currentWorldRepresentation.ReturnToStart();
+            _currentIngredient = null;
+        }
+    }
 
-    } 
+    private void PickUpIngredient(Ingredient fieldIngredient)
+    {
+        _currentWorldRepresentation = GetCurrentWorldRepresentation();
+        _currentIngredient = fieldIngredient;
+        _currentWorldRepresentation.ChangeSprite(IngredientSprite(fieldIngredient.SpriteIndex));
+        CurrentField.SetIngredient(null);
+    }
+
+    public Ingredient Combine(Ingredient current, Ingredient target)
+    {
+        IngredientType newType = CombinedIngredientType(current.ingredientType, target.ingredientType);
+        return new Ingredient(newType);
+    }
+
+
+    private IngredientType CombinedIngredientType(IngredientType lhs, IngredientType rhs)
+    {
+        switch (rhs)
+        {
+            case IngredientType.Volunteer:
+                if (lhs == IngredientType.Poison)
+                {
+                    return IngredientType.Zombie;
+                }
+                break;
+            case IngredientType.Poison:
+                if (lhs == IngredientType.Volunteer)
+                {
+                    return IngredientType.Zombie;
+                }
+                break;
+            case IngredientType.Zombie:
+                return IngredientType.Zombie;
+            default:
+                throw new System.Exception();
+        }
+        return lhs;
+    }
+
+    private WorldRepresentation GetCurrentWorldRepresentation()
+    {
+        if (_currentIndex >= 0 && _currentIndex < _worldSlots.Length)
+        {
+            return _worldSlots[_currentIndex];
+        }
+        return null;
+    }
+
+    private Field CurrentField { get { return _model.GetField(_currentIndex); } }
+
+    private Sprite IngredientSprite(int index)
+    {
+       return _spriteManager.GetSprite((IngredientType)index);
+    }
+
 }

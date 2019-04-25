@@ -14,7 +14,7 @@ public class Field
     }
 
     public Vector2 GetScreenPosition { get { return _screenPosition; } }
-    public Ingredient GetIngredient { get { return _ingredient; } }
+    public Ingredient Ingredient { get { return _ingredient; } }
     public void SetIngredient(Ingredient newIngredient)
     {
         _ingredient = newIngredient;

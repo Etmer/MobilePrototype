@@ -33,22 +33,6 @@ public class Ingredient
         }
     }
 
-    public Ingredient  Combine(Ingredient target)
-    {
-        IngredientType newType = CombinedIngredientType( target.ingredientType);
-        return new Ingredient(newType);
-    }
-    
-    public Ingredient PickUp()
-    {
-        ChangeState(IngredientStates.Dangling);
-        return this;
-    }
-
-    public void Release(Vector3 closestPosition)
-    {
-    }
-
     private void ChangeState(IngredientStates desiredState)
     {
         switch (GetState())
@@ -82,29 +66,6 @@ public class Ingredient
     {
         return _currentState;
     }
-
-    private IngredientType CombinedIngredientType(IngredientType target)
-    {
-        Debug.Log(target + " " + ingredientType);
-        switch (ingredientType)
-        {
-            case IngredientType.Volunteer:
-                if (target == IngredientType.Poison)
-                {
-                    return IngredientType.Zombie;
-                }
-                break;
-            case IngredientType.Poison:
-                if (target == IngredientType.Volunteer)
-                {
-                    return IngredientType.Zombie;
-                }
-                break;
-            case IngredientType.Zombie:
-                    return IngredientType.Zombie;
-            default:
-                throw new System.Exception();
-        }
-        return ingredientType;
-    }
+    
+    public int SpriteIndex { get { return (int)ingredientType; } }
 }
