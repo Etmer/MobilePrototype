@@ -14,7 +14,7 @@ public enum IngredientType
 public class SpriteManager : ScriptableObject
 {
     /// <summary>
-    /// 1 = Volunteer, 2 = Zombie, 3 = Poison, 4 = Foot
+    /// 1 = Volunteer, 2 = Undead, 3 = Poison, 4 = Foot
     /// </summary>
     [SerializeField] private Sprite[] _IngredientSprites;
 
