@@ -113,33 +113,14 @@ public class GameManager : MonoBehaviour
 
     public Ingredient Combine(Ingredient current, Ingredient target)
     {
-        IngredientType newType = CombinedIngredientType(current.ingredientType, target.ingredientType);
-        return new Ingredient(newType);
+        int newType = CombinedIngredientType(current.ingredientType, target.ingredientType);
+        return new Ingredient((IngredientType)newType);
     }
 
 
-    private IngredientType CombinedIngredientType(IngredientType lhs, IngredientType rhs)
+    private int CombinedIngredientType(IngredientType lhs, IngredientType rhs)
     {
-        switch (rhs)
-        {
-            case IngredientType.Volunteer:
-                if (lhs == IngredientType.Poison)
-                {
-                    return IngredientType.Zombie;
-                }
-                break;
-            case IngredientType.Poison:
-                if (lhs == IngredientType.Volunteer)
-                {
-                    return IngredientType.Zombie;
-                }
-                break;
-            case IngredientType.Zombie:
-                return IngredientType.Zombie;
-            default:
-                throw new System.Exception();
-        }
-        return lhs;
+        return (int)lhs * (int)rhs;
     }
 
     private WorldRepresentation GetCurrentWorldRepresentation()

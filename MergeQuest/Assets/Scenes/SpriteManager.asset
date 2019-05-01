@@ -13,7 +13,22 @@ MonoBehaviour:
   m_Name: SpriteManager
   m_EditorClassIdentifier: 
   _IngredientSprites:
-  - {fileID: 21300000, guid: 68b7c0324fcfead478e47d68ba5bd334, type: 3}
-  - {fileID: 21300002, guid: 68b7c0324fcfead478e47d68ba5bd334, type: 3}
-  - {fileID: 21300004, guid: 68b7c0324fcfead478e47d68ba5bd334, type: 3}
-  - {fileID: 21300006, guid: 68b7c0324fcfead478e47d68ba5bd334, type: 3}
+  - {fileID: 21300000, guid: 06ad897e73114814ba7f832a44002631, type: 3}
+  - {fileID: 21300000, guid: 06ad897e73114814ba7f832a44002631, type: 3}
+  - {fileID: 21300000, guid: 06ad897e73114814ba7f832a44002631, type: 3}
+  - {fileID: 21300000, guid: 06ad897e73114814ba7f832a44002631, type: 3}
+  - {fileID: 21300000, guid: 06ad897e73114814ba7f832a44002631, type: 3}
+  - {fileID: 21300000, guid: 06ad897e73114814ba7f832a44002631, type: 3}
+  - {fileID: 21300000, guid: 06ad897e73114814ba7f832a44002631, type: 3}
+  - {fileID: 21300000, guid: 06ad897e73114814ba7f832a44002631, type: 3}
+  - {fileID: 21300000, guid: 06ad897e73114814ba7f832a44002631, type: 3}
+  - {fileID: 21300000, guid: 06ad897e73114814ba7f832a44002631, type: 3}
+  - {fileID: 21300000, guid: 06ad897e73114814ba7f832a44002631, type: 3}
+  - {fileID: 21300000, guid: 06ad897e73114814ba7f832a44002631, type: 3}
+  - {fileID: 21300000, guid: 06ad897e73114814ba7f832a44002631, type: 3}
+  - {fileID: 21300000, guid: 06ad897e73114814ba7f832a44002631, type: 3}
+  - {fileID: 21300000, guid: 06ad897e73114814ba7f832a44002631, type: 3}
+  - {fileID: 21300000, guid: 06ad897e73114814ba7f832a44002631, type: 3}
+  - {fileID: 21300000, guid: 06ad897e73114814ba7f832a44002631, type: 3}
+  - {fileID: 21300000, guid: 06ad897e73114814ba7f832a44002631, type: 3}
+  - {fileID: 21300000, guid: 06ad897e73114814ba7f832a44002631, type: 3}

@@ -263,10 +263,10 @@ TextureImporter:
       name: Plate
       rect:
         serializedVersion: 2
-        x: 7
-        y: 135
-        width: 50
-        height: 53
+        x: 14
+        y: 141
+        width: 36
+        height: 39
       alignment: 9
       pivot: {x: 0.5, y: 0.45}
       border: {x: 0, y: 0, z: 0, w: 0}
