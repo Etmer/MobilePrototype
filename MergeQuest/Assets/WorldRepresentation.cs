@@ -48,5 +48,17 @@ public class WorldRepresentation
         return _renderer.sprite;
     }
 
+    public void Lift(bool state)
+    {
+        if (state)
+        {
+            _renderer.sortingOrder = 4;
+        }
+        else
+        {
+            _renderer.sortingOrder = 2;
+        }
+    }
+
     public int WorldIndex { get { return _index; } }
 }

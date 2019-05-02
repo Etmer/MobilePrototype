@@ -10,7 +10,7 @@ public class LevelGenerator : MonoBehaviour
     public Dictionary<int, Field> CreateField(ref MapData data)
     {
         Dictionary<int, Field> map = new Dictionary<int, Field>();
-        Vector3 startPosition = Vector3.zero;
+        Vector3 startPosition = _parentGameObject.transform.position;
         Vector3 FieldPosition = startPosition;
         int index = 0;
         int mapIndex = 0;
@@ -41,15 +41,22 @@ public class LevelGenerator : MonoBehaviour
 
     private Ingredient CreateIngredient()
     {
-        int index = Random.Range(0, 10);
+        int index = Random.Range(1, 10);
+
         switch (index)
         {
-            case 0:
-                return new Ingredient(IngredientType.Volunteer);
             case 1:
-                return new Ingredient(IngredientType.Zombie);
+                return new Ingredient(IngredientType.Volunteer);
             case 2:
+                return new Ingredient(IngredientType.Female);
+            case 3:
                 return new Ingredient(IngredientType.Poison);
+            case 4:
+                return new Ingredient(IngredientType.PotionOfElectricity);
+            case 5:
+                return new Ingredient(IngredientType.PotionOfLife);
+            case 6:
+                return new Ingredient(IngredientType.Water);
             default:
                 return null;
         }
@@ -57,6 +64,6 @@ public class LevelGenerator : MonoBehaviour
 
     private Sprite SetSprite(IngredientType ingredientType)
     {
-        return _spriteManager.GetSprite(ingredientType);
+        return GameManager.instance.GameBackEnd.GetSprite("ID-" + (((int)ingredientType)).ToString("D2"));
     }
 }

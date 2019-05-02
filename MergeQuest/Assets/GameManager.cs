@@ -14,15 +14,29 @@ public class GameManager : MonoBehaviour
     [SerializeField] private WorldRepresentation[] _worldSlots;
     [SerializeField] private Transform _prefab;
     [SerializeField] private Rect _playArea;
-    [SerializeField] private SpriteManager _spriteManager;
     [SerializeField] private Texture _text;
-    
+    [SerializeField] private Field _lastField;
     [SerializeField] private LevelGenerator _levelGenerator;
     [SerializeField] private MapData _mapdata;
+    [SerializeField] private Transform _startPoint;
 
     private WorldRepresentation _currentWorldRepresentation;
+
+    public static GameManager instance;
+
+    private Backend _backEnd;
+
     void Start()
     {
+        _backEnd = new Backend();
+        if (instance == null)
+        {
+            instance = this;
+        }
+        else
+        {
+            Destroy(instance);
+        }
         GameMetrics.Init(_defaultSprite);
         _mapdata = new MapData();
         _model = new DataModel(_levelGenerator.CreateField(ref _mapdata));
@@ -43,12 +57,13 @@ public class GameManager : MonoBehaviour
     {
         CalculateMousePosition();
         _worldPosition = Camera.main.ScreenToWorldPoint(_mousePosition);
-        _currentIndex = GameMetrics.VectorToIndex(_worldPosition - Vector3.zero);
+        _currentIndex = GameMetrics.VectorToIndex(_worldPosition - _startPoint.position);
         if (_playArea.Contains(new Vector2(_worldPosition.x, _worldPosition.y)))
         {
-            if (Input.GetMouseButtonDown(0) && CurrentField.HasContent)
+            if (Input.GetMouseButtonDown(0) && GetCurrentField.HasContent)
             {
-                PickUpIngredient(CurrentField.Ingredient);
+                PickUpIngredient(GetCurrentField.Ingredient);
+                _currentWorldRepresentation.Lift(true);
             }
             if (Input.GetMouseButton(0) && _currentWorldRepresentation != null)
             {
@@ -68,7 +83,7 @@ public class GameManager : MonoBehaviour
         _mousePosition.z = 5;
         return _mousePosition;
     }
-    
+
     private int CalculateIndex(int x, int y)
     {
         return x + (y * 3);
@@ -83,46 +98,67 @@ public class GameManager : MonoBehaviour
     {
         if (_currentIngredient != null)
         {
-            if (_currentWorldRepresentation != GetCurrentWorldRepresentation())
+            if (GetCurrentField.HasContent)
             {
-                _currentWorldRepresentation.DeleteSprite();
-            }
-            if (CurrentField.HasContent)
-            {
-                Ingredient temp = Combine(_currentIngredient, CurrentField.Ingredient);
-                CurrentField.SetIngredient(temp);
-                GetCurrentWorldRepresentation().ChangeSprite(IngredientSprite(temp.SpriteIndex));
+                Ingredient temp;
+                if (Combine(_currentIngredient, GetCurrentField.Ingredient, out temp))
+                {
+                    GetCurrentField.SetIngredient(temp);
+                    GetCurrentWorldRepresentation().ChangeSprite(IngredientSprite(temp.ingredientType));
+
+                    if (_currentWorldRepresentation != GetCurrentWorldRepresentation())
+                    {
+                        _currentWorldRepresentation.DeleteSprite();
+                    }
+                }
+                else
+                {
+                    _lastField.SetIngredient(_currentIngredient);
+                }
             }
             else
             {
-                CurrentField.SetIngredient(_currentIngredient);
-                GetCurrentWorldRepresentation().ChangeSprite(IngredientSprite(_currentIngredient.SpriteIndex));
+                ChangeField();
             }
             _currentWorldRepresentation.ReturnToStart();
+            _currentWorldRepresentation.Lift(false);
             _currentIngredient = null;
+        }
+    }
+
+    private void ChangeField()
+    {
+        Debug.Log("Field changed");
+        GetCurrentField.SetIngredient(_currentIngredient);
+        GetCurrentWorldRepresentation().ChangeSprite(IngredientSprite(_currentIngredient.ingredientType));
+        if (_currentWorldRepresentation != GetCurrentWorldRepresentation())
+        {
+            _currentWorldRepresentation.DeleteSprite();
         }
     }
 
     private void PickUpIngredient(Ingredient fieldIngredient)
     {
+        Debug.Log(fieldIngredient.ingredientType);
         _currentWorldRepresentation = GetCurrentWorldRepresentation();
         _currentIngredient = fieldIngredient;
-        _currentWorldRepresentation.ChangeSprite(IngredientSprite(fieldIngredient.SpriteIndex));
-        CurrentField.SetIngredient(null);
+        _currentWorldRepresentation.ChangeSprite(IngredientSprite(fieldIngredient.ingredientType));
+        GetCurrentField.SetIngredient(null);
+        _lastField = GetCurrentField;
     }
 
-    public Ingredient Combine(Ingredient current, Ingredient target)
+    public bool Combine(Ingredient current, Ingredient target, out Ingredient output)
     {
-        int newType = CombinedIngredientType(current.ingredientType, target.ingredientType);
-        return new Ingredient((IngredientType)newType);
+        int newType = (int)current.ingredientType + ((int)target.ingredientType * CSVParser.lineLength);
+        if (CSVParser.instance.combinations.ContainsKey(newType))
+        {
+            output = new Ingredient(_backEnd.GetData(newType));
+            return true;
+        }
+        output = null;
+        return false;
     }
-
-
-    private int CombinedIngredientType(IngredientType lhs, IngredientType rhs)
-    {
-        return (int)lhs * (int)rhs;
-    }
-
+    
     private WorldRepresentation GetCurrentWorldRepresentation()
     {
         if (_currentIndex >= 0 && _currentIndex < _worldSlots.Length)
@@ -132,11 +168,15 @@ public class GameManager : MonoBehaviour
         return null;
     }
 
-    private Field CurrentField { get { return _model.GetField(_currentIndex); } }
+    private Field GetCurrentField { get { return _model.GetField(_currentIndex); } }
 
-    private Sprite IngredientSprite(int index)
+    private Sprite IngredientSprite(IngredientType ingredientType)
     {
-       return _spriteManager.GetSprite((IngredientType)index);
+        int index = (int)ingredientType;
+        string Id = "ID-" + index.ToString("D2");
+        return _backEnd.GetSprite(Id);
     }
 
+
+    public Backend GameBackEnd { get { return _backEnd; } }
 }

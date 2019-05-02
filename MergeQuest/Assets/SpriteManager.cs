@@ -1,39 +1,32 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.U2D;
 
 public enum IngredientType
 {
-    Volunteer,
-    Barbarian,
-    Corpse,
-    Zombie,
-    SuperZombie,
-    Poison,
-    PotionOfElectricity,
-    PotionOfLife,
-    Water,
-    Dirt,
-    WetClay,
-    Golem,
-    FrankensteinsMonster,
-    Rogue
+    Volunteer = 00,
+    Barbarian = 01, 
+    Corpse = 02,
+    PotionOfElectricity = 03,
+    PotionOfLife = 04,
+    Water = 05,
+    Poison = 06,
+    Zombie = 07,
+    SuperZombie = 08,
+    Female = 09,
+    Amazon = 10,
+    FemCorpse = 11,
+    Dirt = 12,
+    WetDirt = 13,
+    Golem = 14,
+    FrankensteinsMonster = 15,
+    Banshee = 16
 }
 
 [CreateAssetMenu(fileName ="Create New Spritemanager", menuName ="Create New")]
 public class SpriteManager : ScriptableObject
 {
-    /// <summary>
-    /// 1 = Volunteer, 2 = Babarian, 3 = Corpse, 4 = Zombie
-    /// 5 = SuperZombie, 6 = Poison, 7 = PotionOfElectricity
-    /// 8 = PotionOfLife, 9 = Water, 10 = Dirt, 11 = WetClay
-    /// 12 = Golem, 13 = FrankensteinsMonster, 14 = Rogue 
-    /// </summary>
-    [SerializeField] private Sprite[] _IngredientSprites;
-
-    public Sprite GetSprite(IngredientType ingredientType)
-    {
-        return _IngredientSprites[(int)ingredientType];
-    }
+    
 
 }

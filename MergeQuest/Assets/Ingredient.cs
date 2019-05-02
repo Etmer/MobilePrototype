@@ -12,8 +12,6 @@ public enum IngredientStates
 
 public class Ingredient
 {
-    public int index { get; private set; }
-
     private Vector3 _originPosition;
 
     private IngredientStates _currentState;
@@ -23,14 +21,12 @@ public class Ingredient
     public Ingredient(IngredientType typeOfIngredient)
     {
         ingredientType = typeOfIngredient;
-        if (ingredientType == IngredientType.Volunteer || ingredientType == IngredientType.Poison)
-        {
-            index = 0;
-        }
-        else
-        {
-            index = 1;
-        }
+        SpriteId = "ID-" + ((int)ingredientType).ToString("D2");
+    }
+
+    public Ingredient(IngredientData data)
+    {
+        ingredientType = data.IngredientDataType;
     }
 
     private void ChangeState(IngredientStates desiredState)
@@ -67,5 +63,5 @@ public class Ingredient
         return _currentState;
     }
     
-    public int SpriteIndex { get { return (int)ingredientType; } }
+    public string SpriteId { get; private set; }
 }
