@@ -15,9 +15,9 @@ public class LevelGenerator : MonoBehaviour
         int index = 0;
         int mapIndex = 0;
 
-        for (int y = 0; y < 3; y++)
+        for (int y = 0; y < 4; y++)
         {
-            for (int x = 0; x < 3; x++)
+            for (int x = 0; x < 4; x++)
             {
                 FieldPosition = startPosition + Vector3.right * GameMetrics.SpriteWidth * x + Vector3.up * GameMetrics.SpriteHeight * y + Vector3.forward/1000 * y;
                 data.AddPosition( FieldPosition);
@@ -35,7 +35,7 @@ public class LevelGenerator : MonoBehaviour
                 index++;
             }
         }
-        data.ChangeRect(startPosition.x - GameMetrics.SpriteWidth / 2, startPosition.y - GameMetrics.SpriteHeight / 2, 3 * GameMetrics.SpriteWidth, 3 * GameMetrics.SpriteHeight);
+        data.ChangeRect(startPosition.x - GameMetrics.SpriteWidth / 2, startPosition.y - GameMetrics.SpriteHeight / 2, 4 * GameMetrics.SpriteWidth, 4 * GameMetrics.SpriteHeight);
         return map;
     }
 

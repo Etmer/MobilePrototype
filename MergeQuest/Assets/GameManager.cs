@@ -37,7 +37,7 @@ public class GameManager : MonoBehaviour
         {
             Destroy(instance);
         }
-        GameMetrics.Init(_defaultSprite);
+        GameMetrics.Init(_defaultSprite,4);
         _mapdata = new MapData();
         _model = new DataModel(_levelGenerator.CreateField(ref _mapdata));
         ReadMapData();
